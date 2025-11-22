@@ -1,11 +1,15 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, BooleanField
+from wtforms import StringField, SelectField, SubmitField
 from wtforms.validators import DataRequired
 from booksdb import BooksDB
 
 class SearchWTF(FlaskForm):
-    myoptions = [(None, "Choose your Search Type"), ('byAuthor','By Author'),('byTitle','By Title'),
-                 ('byPublisher','By Publisher')]
+    myoptions = [
+        (None, "Choose your Search Type"),
+        ('byAuthor','By Author'),
+        ('byTitle','By Title'),
+        ('byPublisher','By Publisher')
+    ]
     search_choice = SelectField("SearchChoice", choices=myoptions,validators=[DataRequired()] )
 
 class ByAuthorIdWTF(FlaskForm):
@@ -15,10 +19,10 @@ class ByAuthorIdWTF(FlaskForm):
 
 
 class ByPublisherIdWTF(FlaskForm):
-    publisher_choice = SelectField("Publisher", coerce=int)
-    submit = SubmitField("Search")
+    mydb = BooksDB()
+    publishers = mydb.getpublishers()
+    publisher_choice = SelectField("Publisher", choices=publishers)
 
 class ByTitleWTF(FlaskForm):
-    # This will also need a stringfield for the words the user types
-    pass
-
+    title_choice = StringField("Enter Title", validators=[DataRequired()])
+    submit = SubmitField("Search")
