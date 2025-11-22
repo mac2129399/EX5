@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, url_for, redirect, session
 from string import Template
 from loginwtf import LoginWTF
-from searchwtf import SearchWTF,ByAuthorIdWTF
+from searchwtf import SearchWTF, ByAuthorIdWTF, ByPublisherIdWTF
 from booksdb import BooksDB
 from flask_sessions import Session
 from flask_bcrypt import Bcrypt
@@ -125,9 +125,14 @@ def search_router(searchtype):
         byauthorform = ByAuthorIdWTF()
         return render_template('byauthor.html', form=byauthorform)
     elif searchtype == 'byTitle':
-        return "You Choose by Title"
+        form = ByTitleWTF()
+        return render_template('bytitle.html', form=form)
     elif searchtype == 'byPublisher':
-        return "You Choose by Publisher"
+        form = ByPublisherIdWTF()
+        db = BooksDB()
+        publisher_list = db.getpublishers()
+        form.publisher_choice.choices = publisher_list
+        return render_template("bypublisher.html", form=form)
 
 
 @app.route('/results/<option>', methods=['POST'])
@@ -139,9 +144,15 @@ def search_results(option=None):
         books = mydb.getbooksbyauthorid(request.form['author_choice'])
         return render_template('booksbyauthorid.html', data=books)
     elif option == "booksbypublisherid":
-        return "Should list books by publisherid"
+        db = BooksDB()
+        publisher_id = request.form.get("publisher_choice")
+        results = db.getbooksbypublisherid(publisher_id)
+        return render_template("booksbypublisherid.html", results=results)
     elif option == "booksbytitle":
-        return "Should list books by title"
+        db = BooksDB()
+        title_part = request.form.get("title_choice")
+        results = db.getbooksbytitle(title_part)
+        return render_template("booksbytitle.html", results=results)
 
 
 
