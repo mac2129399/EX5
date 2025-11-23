@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, url_for, redirect, session
+from flask import Flask, render_template, request, redirect, session
 from string import Template
 from loginwtf import LoginWTF
-from searchwtf import SearchWTF, ByAuthorIdWTF, ByPublisherIdWTF
+from searchwtf import SearchWTF, ByAuthorIdWTF, ByPublisherIdWTF, ByTitleWTF
 from booksdb import BooksDB
 from flask_sessions import Session
 from flask_bcrypt import Bcrypt
@@ -20,7 +20,7 @@ Session(app)
 
 @app.route("/")
 def index():
-    return "Hello World"
+    return redirect ('/login')
 
 
 @app.route("/aboutme")
