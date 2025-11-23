@@ -21,7 +21,7 @@ Session(app)
 @app.route("/")
 def index():
     return redirect ('/login')
-
+"""Redirects the user to the login page."""
 
 @app.route("/aboutme")
 def aboutme():
@@ -108,6 +108,7 @@ The sections below are your work area
 
 @app.route('/search', methods=['GET','POST'])
 def searchchoices():
+    """Main search page that displays a search type selector."""
     searchform = SearchWTF()
     if searchform.validate_on_submit():
         if request.form['search_choice'] == None:
@@ -121,22 +122,24 @@ def searchchoices():
 
 # note, just a helper function, not used as a route
 def search_router(searchtype):
+    """Routes to the search form that the user chooses."""
+    db = BooksDB()
     if searchtype == 'byAuthor':
-        byauthorform = ByAuthorIdWTF()
-        return render_template('byauthor.html', form=byauthorform)
+        form = ByAuthorIdWTF()
+        form.author_choice.choices = db.getauthors()
+        return render_template('byauthor.html', form=form)
     elif searchtype == 'byTitle':
         form = ByTitleWTF()
         return render_template('bytitle.html', form=form)
     elif searchtype == 'byPublisher':
         form = ByPublisherIdWTF()
-        db = BooksDB()
-        publisher_list = db.getpublishers()
-        form.publisher_choice.choices = publisher_list
+        form.publisher_choice.choices = db.getpublishers()
         return render_template("bypublisher.html", form=form)
 
 
 @app.route('/results/<option>', methods=['POST'])
 def search_results(option=None):
+    """Handles search form submissions and displays results."""
     if option is None:
         return "Something went wrong"
     elif option == "booksbyauthorid":
@@ -150,12 +153,12 @@ def search_results(option=None):
         return render_template("booksbypublisherid.html", results=results)
     elif option == "booksbytitle":
         db = BooksDB()
-        title_part = request.form.get("title_choice")
+        title_part = request.form.get("title_input")
         results = db.getbooksbytitle(title_part)
         return render_template("booksbytitle.html", results=results)
 
 
 
-
+# Run the Flask server
 if __name__ == "__main__":
     app.run()
