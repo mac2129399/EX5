@@ -3,7 +3,7 @@ from string import Template
 from loginwtf import LoginWTF
 from searchwtf import SearchWTF, ByAuthorIdWTF, ByPublisherIdWTF, ByTitleWTF
 from booksdb import BooksDB
-from flask_sessions import Session
+from flask_session import Session
 from flask_bcrypt import Bcrypt
 from wtforms import StringField, TextAreaField, DateField,DecimalField,FloatField,IntegerField,RadioField,SelectField
 from wtforms import HiddenField,PasswordField
